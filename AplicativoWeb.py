@@ -27,7 +27,7 @@ with st.sidebar:
     st.markdown("### 👨‍💻 Desarrollado por:")
     st.write("**Karina T.Q.**")
     st.write("**Magaly P.B.**")
-    st.write("**Tesis UNSAAC**")
+    st.write("**Version V01**")
     st.write("📱 **WhatsApp:** +51 928 859 231")
     st.write("📧 **AppWeb:** Validacion CPE")
     st.markdown("---")
@@ -35,7 +35,7 @@ with st.sidebar:
 # ============================================================
 # ENCABEZADO
 # ============================================================
-st.title("📊 Validación SIRE - SUNAT")
+st.title("📊 VALIDACIÓN CPE - SIRE - COMPRAS - SUNAT")
 st.write("Herramienta de validación masiva de comprobantes con la API de SUNAT.")
 
 # ============================================================
