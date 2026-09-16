@@ -9,12 +9,33 @@ import io
 
 # Configuración de la ventana web
 st.set_page_config(
-    page_title="Motor de Validación SIRE - SUNAT",
+    page_title="Validación SIRE - SUNAT",
     page_icon="📊",
     layout="centered"
 )
 
-st.title("📊 Motor de Validación SIRE - SUNAT")
+# ============================================================
+# BARRA LATERAL (LOGO Y DATOS DE CONTACTO)
+# ============================================================
+with st.sidebar:
+    try:
+        st.image("logo.png", use_container_width=True)
+    except:
+        st.info("💡 Sube 'logo.png' a GitHub para ver tu logo aquí.")
+        
+    st.markdown("---")
+    st.markdown("### 👨‍💻 Desarrollado por:")
+    st.write("**Karina T.Q.**")
+    st.write("**Magaly P.B.**")
+    st.write("**Tesis UNSAAC**")
+    st.write("📱 **WhatsApp:** +51 928 859 231")
+    st.write("📧 **AppWeb:** Validacion CPE")
+    st.markdown("---")
+
+# ============================================================
+# ENCABEZADO
+# ============================================================
+st.title("📊 Validación SIRE - SUNAT")
 st.write("Herramienta de validación masiva de comprobantes con la API de SUNAT.")
 
 # ============================================================
@@ -38,7 +59,7 @@ archivo_txt = st.file_uploader("Seleccione el archivo TXT de la propuesta SIRE",
 
 
 # ============================================================
-# FUNCIONES DE CONSULTA A SUNAT (Conservan tu lógica exacta)
+# FUNCIONES DE CONSULTA A SUNAT
 # ============================================================
 
 def obtener_token(client_id, client_secret):
@@ -126,7 +147,6 @@ def consultar_comprobante(token, ruc_empresa, ruc_emisor, tipo_comprobante, seri
 st.header("3. Procesar Validación")
 
 if st.button("🚀 Iniciar Validación de Comprobantes", type="primary"):
-    # Validaciones básicas de campos vacíos
     if not RUC_EMPRESA or not CLIENT_ID or not CLIENT_SECRET:
         st.warning("⚠️ Debe ingresar RUC, Client ID y Client Secret.")
     elif archivo_txt is None:
@@ -140,7 +160,6 @@ if st.button("🚀 Iniciar Validación de Comprobantes", type="primary"):
         else:
             st.success("✅ Token obtenido correctamente.")
 
-            # Lectura del archivo TXT subido
             try:
                 df = pd.read_csv(
                     archivo_txt,
@@ -155,7 +174,6 @@ if st.button("🚀 Iniciar Validación de Comprobantes", type="primary"):
                 st.error(f"🔴 Error al leer el archivo TXT: {error}")
                 st.stop()
 
-            # Nombres de columnas esperados
             COL_FECHA = "Fecha de emisión"
             COL_SERIE = "Serie del CDP"
             COL_NUMERO = "Nro CP o Doc. Nro Inicial (Rango)"
@@ -167,7 +185,6 @@ if st.button("🚀 Iniciar Validación de Comprobantes", type="primary"):
             condiciones = []
             observaciones = []
 
-            # Componentes visuales de progreso
             barra_progreso = st.progress(0)
             texto_estado = st.empty()
             total_filas = len(df)
@@ -238,14 +255,12 @@ if st.button("🚀 Iniciar Validación de Comprobantes", type="primary"):
                     condiciones.append("")
                     observaciones.append(str(error))
 
-                # Actualización de la barra de progreso
                 progreso_actual = (indice + 1) / total_filas
                 barra_progreso.progress(progreso_actual)
                 texto_estado.text(f"Procesando {indice + 1} de {total_filas} comprobantes...")
 
                 time.sleep(0.2)
 
-            # Agregar resultados al DataFrame
             df["Estado_SUNAT_CPE"] = estados
             df["Estado_RUC"] = estados_ruc
             df["Condicion_Domicilio"] = condiciones
@@ -253,13 +268,11 @@ if st.button("🚀 Iniciar Validación de Comprobantes", type="primary"):
 
             st.success("🎉 ¡Validación terminada exitosamente!")
 
-            # Guardar el archivo Excel en memoria para la descarga
             output = io.BytesIO()
             with pd.ExcelWriter(output, engine="openpyxl") as writer:
                 df.to_excel(writer, index=False)
             output.seek(0)
 
-            # Botón de descarga del Excel generado
             st.download_button(
                 label="📥 Descargar Resultado Excel",
                 data=output,
